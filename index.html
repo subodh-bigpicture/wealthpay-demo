@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WLTH Pay — Demo</title>
-  <meta name="description" content="Demo of the WealthPay platform shell. Clicking 'Pay' hands off to the Pay service frontend." />
+  <meta name="description" content="Demo of the WealthPay platform shell. Choosing 'Pay' hands off to the Pay service frontend." />
   <link rel="icon" href="data:," />
 
   <!-- ============================================================
@@ -27,6 +27,7 @@
       --blue-600: #1039a8;
       --blue-soft: #eef1ff;
       --border: #eceff0;
+      --pill-border: #c4c9d1;
       --chip-border: #d7dadf;
       --chip-hover: #ececec;
       --shadow-menu: 0 20px 25px -5px rgba(0,0,0,.1), 0 8px 10px -6px rgba(0,0,0,.1);
@@ -95,7 +96,7 @@
       border-radius: 9999px;
     }
 
-    /* Pay dropdown trigger */
+    /* Service dropdown trigger */
     .pay-dropdown { position: relative; }
     .pay-trigger {
       display: flex;
@@ -110,7 +111,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      border: 1px solid #c4c9d1;
+      border: 1px solid var(--pill-border);
       border-radius: 24px;
       background: transparent;
       color: var(--text);
@@ -122,8 +123,16 @@
     .pay-trigger:hover .pay-pill { border-color: #a9afb9; }
     /* Highlight the trigger while the menu is open */
     .pay-dropdown.open .pay-pill { border-color: var(--blue-500); }
-    .pay-pill .chevron { transition: transform .2s ease; color: var(--text-dimmed); }
-    .pay-dropdown.open .pay-pill .chevron { transform: rotate(180deg); }
+
+    .pay-pill .pill-icon { width: 18px; height: 18px; flex-shrink: 0; color: var(--text-dimmed); }
+    .pay-pill .pill-label { white-space: nowrap; }
+    .pay-pill .chevron {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      color: var(--text-dimmed);
+      transition: transform .2s ease;
+    }
+    .pay-dropdown.open .pay-pill .chevron { transform: rotate(180deg); color: var(--blue-500); }
 
     /* Dropdown menu */
     .pay-menu {
@@ -254,25 +263,6 @@
       color: var(--text-muted);
     }
 
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 24px; left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--text);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 500;
-      padding: 12px 20px;
-      border-radius: 12px;
-      box-shadow: var(--shadow-menu);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .2s ease, transform .2s ease;
-      z-index: 100;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
     @media (max-width: 720px) {
       .acct-chip { display: none; }
       .hero h1 { font-size: 30px; }
@@ -281,7 +271,7 @@
 </head>
 <body>
   <div class="demo-bar">
-    <b>WLTH Pay — Demo shell.</b> Open the <b>Pay</b> menu (or use the button below) to hand off to the Pay service frontend.
+    <b>WLTH Pay — Demo shell.</b> Open the services menu and choose <b>Pay</b> (or use the button below) to hand off to the Pay frontend.
   </div>
 
   <header>
@@ -291,22 +281,22 @@
         <span class="demo-tag">Demo</span>
       </div>
 
-      <!-- Pay service switcher -->
+      <!-- Service switcher (defaults to Broker; choosing Pay redirects) -->
       <div class="pay-dropdown" id="payDropdown">
         <button class="pay-trigger" id="payTrigger" aria-haspopup="menu" aria-expanded="false">
           <span class="pay-pill">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-dimmed)"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
-            Pay
-            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="m6 9 6 6 6-6"/></svg>
+            <svg class="pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
+            <span class="pill-label">Broker</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
           </span>
         </button>
 
         <div class="pay-menu" role="menu" aria-label="Services">
-          <button class="menu-item" role="menuitem" data-service="broker">
+          <button class="menu-item current" role="menuitem" data-service="broker">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
             Broker
           </button>
-          <button class="menu-item current" role="menuitem" data-service="pay" id="payService">
+          <button class="menu-item" role="menuitem" data-service="pay">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
             Pay
           </button>
@@ -342,7 +332,7 @@
     <div class="hero">
       <div class="hero-eyebrow">WealthPay Platform</div>
       <h1>Welcome to WealthPay</h1>
-      <p>This is a demo of the WealthPay platform shell. The Pay service is handled by our team — launch it below, or pick it from the Pay menu above.</p>
+      <p>This is a demo of the WealthPay platform shell. The Pay service is handled by our team — launch it below, or choose Pay from the services menu above.</p>
       <button class="btn-primary" id="launchPay">
         Launch Pay
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -351,16 +341,14 @@
     </div>
   </main>
 
-  <div class="toast" id="toast"></div>
-
   <script>
     (function () {
       var dropdown = document.getElementById("payDropdown");
       var trigger = document.getElementById("payTrigger");
-      var payService = document.getElementById("payService");
       var launchPay = document.getElementById("launchPay");
-      var toast = document.getElementById("toast");
-      var toastTimer;
+      var items = document.querySelectorAll(".menu-item");
+      var pillIcon = document.querySelector(".pill-icon");
+      var pillLabel = document.querySelector(".pill-label");
 
       function open() {
         dropdown.classList.add("open");
@@ -373,14 +361,17 @@
       function toggle() {
         dropdown.classList.contains("open") ? close() : open();
       }
-      function showToast(msg) {
-        toast.textContent = msg;
-        toast.classList.add("show");
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2200);
-      }
       function goToPay() {
         window.location.href = window.PAY_REDIRECT_URL;
+      }
+
+      // Switch the displayed service (placeholders only — Pay is handled separately)
+      function selectService(el) {
+        var icon = el.querySelector("svg");
+        if (icon) pillIcon.innerHTML = icon.innerHTML;
+        pillLabel.textContent = el.textContent.trim();
+        items.forEach(function (i) { i.classList.remove("current"); });
+        el.classList.add("current");
       }
 
       trigger.addEventListener("click", function (e) {
@@ -396,20 +387,17 @@
         if (e.key === "Escape") close();
       });
 
-      // Pay -> hand off to the Pay service frontend
-      payService.addEventListener("click", function (e) {
-        e.stopPropagation();
-        goToPay();
-      });
       launchPay.addEventListener("click", goToPay);
 
-      // Other services are demo-only
-      document.querySelectorAll('.menu-item:not(#payService)').forEach(function (el) {
+      items.forEach(function (el) {
         el.addEventListener("click", function (e) {
           e.stopPropagation();
+          if (el.getAttribute("data-service") === "pay") {
+            goToPay();            // Pay hands off to the Pay frontend
+            return;
+          }
+          selectService(el);      // other services just switch the shown value
           close();
-          var name = el.getAttribute("data-service");
-          showToast("Demo only — only “Pay” is wired up (" + name + ")");
         });
       });
     })();
